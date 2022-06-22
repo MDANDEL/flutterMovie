@@ -18,9 +18,9 @@ class _Tabs extends State<Tabs> {
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _currentIndex,
           items: [
-            BottomNavigationBarItem(icon: Icon(Icons.warning), label: "Home"),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.forward), label: "Settings"),
+                icon: Icon(Icons.settings), label: "Settings"),
           ],
           onTap: (int index) {
             setState(() => _currentIndex = index);

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_navigation_starter/pages/page_contact.dart';
+import '../models/api_movies.dart';
+import '../models/movie.dart';
 
 class PageHome extends StatefulWidget {
   PageHome({Key? key, required this.title}) : super(key: key);
@@ -12,10 +14,18 @@ class PageHome extends StatefulWidget {
 class _PageHomeState extends State<PageHome> {
   List<Map<String, dynamic>> contacts = [];
 
-  @override
-  void initState() {
-    getContacts();
-    super.initState();
+  Future<void> getPopularMovies() async{
+    ApiMovies api = ApiMovies();
+    Map<String,dynamic>mapMovies = await api.getPopular();
+    if(mapMovies["code"] == 0){
+      // Je peux fabriquer ma liste de Movie
+      List<Movie> movies = Movie.moviesFromApi(mapMovies["body"]);
+      movies.forEach((Movie movie) {
+        print(movie.title);
+      });
+    }else{
+      //Todo
+    }
   }
 
   void getContacts() {
@@ -46,43 +56,52 @@ class _PageHomeState extends State<PageHome> {
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: ListView.builder(
-            itemCount: contacts.length,
-            itemBuilder: (context, i) {
-              Map<String, dynamic> contact = contacts[i];
-              return Container(
-                padding: EdgeInsets.all(10.0),
-                child: Card(
-                    elevation: 2.0,
-                    // InkWell car on a besoin d'un onTap pour aller sur une autre vue
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (BuildContext context) {
-                          return PageContact(contact: contact);
-                        }));
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: _size.width / 2.5,
-                              child: Text(
-                                contact['name'],
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                            ),
-                            Text(
-                              contact['phone'],
-                              style: TextStyle(color: Colors.red),
-                            )
-                          ],
-                        ),
-                      ),
-                    )),
-              );
-            }));
+        body: Center(
+          child: ElevatedButton(
+            child: Text("Voir les Films Populaires"),
+            onPressed: getPopularMovies,
+            ),
+        ),
+    );
+
+
+        // ListView.builder(
+        //     itemCount: contacts.length,
+        //     itemBuilder: (context, i) {
+        //       Map<String, dynamic> contact = contacts[i];
+        //       return Container(
+        //         padding: EdgeInsets.all(10.0),
+        //         child: Card(
+        //             elevation: 2.0,
+        //             // InkWell car on a besoin d'un onTap pour aller sur une autre vue
+        //             child: InkWell(
+        //               onTap: () {
+        //                 Navigator.push(context,
+        //                     MaterialPageRoute(builder: (BuildContext context) {
+        //                   return PageContact(contact: contact);
+        //                 }));
+        //               },
+        //               child: Container(
+        //                 padding: EdgeInsets.all(20),
+        //                 child: Row(
+        //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //                   children: [
+        //                     Container(
+        //                       width: _size.width / 2.5,
+        //                       child: Text(
+        //                         contact['name'],
+        //                         style: TextStyle(color: Colors.blue),
+        //                       ),
+        //                     ),
+        //                     Text(
+        //                       contact['phone'],
+        //                       style: TextStyle(color: Colors.red),
+        //                     )
+        //                   ],
+        //                 ),
+        //               ),
+        //             )),
+        //       );
+        //     }));
   }
 }
